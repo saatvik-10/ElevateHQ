@@ -19,7 +19,7 @@ model User {
     firstName String?
     lastName  String?
 
-    emailAffress String @unique
+    emailAddress String @unique
 
     credits Int @default(100)
 }
