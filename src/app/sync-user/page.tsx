@@ -15,7 +15,7 @@ const SyncUser = async () => {
     return notFound();
   }
 
-  //if user exists, update it
+  //if user exists, update it else create a new one
   await db.user.upsert({
     where: {
       emailAddress: user.emailAddresses[0].emailAddress ?? "",
