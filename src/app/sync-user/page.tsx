@@ -18,7 +18,7 @@ const SyncUser = async () => {
   //if user exists, update it
   await db.user.upsert({
     where: {
-      emailAddress: user.emailAddresses[0].emailAddress,
+      emailAddress: user.emailAddresses[0].emailAddress ?? "",
     },
     update: {
       imageUrl: user.imageUrl,
@@ -26,8 +26,8 @@ const SyncUser = async () => {
       lastName: user.lastName,
     },
     create: {
-      id: user.id,
-      emailAddress: user.emailAddresses[0].emailAddress,
+      id: userId,
+      emailAddress: user.emailAddresses[0].emailAddress ?? "",
       imageUrl: user.imageUrl,
       firstName: user.firstName,
       lastName: user.lastName,
