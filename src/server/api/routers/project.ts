@@ -24,4 +24,17 @@ export const ProjectRouter = createTRPCRouter({
       });
       return project;
     }),
+  getProjects: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.project.findMany({
+      where: {
+        userToProjects: {
+          some: {
+            //checks if there exists at least one record
+            userId: ctx.user.userId!,
+          },
+        },
+        deletedAt: null,
+      },
+    });
+  }),
 });
