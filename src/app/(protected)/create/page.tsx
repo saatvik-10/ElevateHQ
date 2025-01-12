@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,7 @@ type FormInputProps = {
 const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm<FormInputProps>();
   const createProject = api.project.createProject.useMutation();
+  const reftech = useRefetch();
 
   function onSubmit(data: FormInputProps) {
     createProject.mutate(
@@ -28,6 +30,7 @@ const CreateProject = () => {
         onSuccess: () => {
           toast.success("Project created successfully");
           reset();
+          reftech();
         },
       },
     );
@@ -64,7 +67,9 @@ const CreateProject = () => {
               placeholder="GitHub Token (Optional)"
             />
             <div className="h-4"></div>
-            <Button disabled={createProject.isPending} type="submit">Check Credits</Button>
+            <Button disabled={createProject.isPending} type="submit">
+              Check Credits
+            </Button>
           </form>
         </div>
       </div>
