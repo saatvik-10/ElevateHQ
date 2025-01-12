@@ -64,7 +64,7 @@ const CreateProject = () => {
               placeholder="GitHub Token (Optional)"
             />
             <div className="h-4"></div>
-            <Button type="submit">Check Credits</Button>
+            <Button disabled={createProject.isPending} type="submit">Check Credits</Button>
           </form>
         </div>
       </div>
