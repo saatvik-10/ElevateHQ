@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 type FormInputProps = {
-  repoURL: string;
   projectName: string;
+  repoURL: string;
   githubToken?: string;
 };
 
@@ -53,12 +53,12 @@ const CreateProject = () => {
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-              {...register("repoURL", { required: true })}
+              {...register("projectName", { required: true })}
               placeholder="Project Name"
             />
             <div className="h-2"></div>
             <Input
-              {...register("projectName", { required: true })}
+              {...register("repoURL", { required: true })}
               placeholder="GitHub URL"
             />
             <div className="h-2"></div>
