@@ -23,3 +23,14 @@ model User {
 
     credits Int @default(100)
 }
+
+model Project {
+    id        String      @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+    githubURL String
+    
+    deletedAt DateTime?
+}
