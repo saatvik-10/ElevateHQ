@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +21,7 @@ import {
   Plus,
   Presentation,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -44,10 +46,18 @@ const projects = [
 
 const AppSidebar = () => {
   const pathname = usePathname();
+  const { open } = useSidebar();
 
   return (
     <Sidebar collapsible="icon" variant="floating">
-      <SidebarHeader>Logo</SidebarHeader>
+      <SidebarHeader>
+        <div className="flex items-center gap-2">
+          <Image alt="Logo" src="/logo.png" height={40} width={40} />
+          {open && (
+            <h1 className="text-xl font-bold text-primary/80">ElevateHQ</h1>
+          )}
+        </div>
+      </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
@@ -86,7 +96,7 @@ const AppSidebar = () => {
                       <div>
                         <div
                           className={cn(
-                            "flex size-6 items-center justify-center rounded-sm border bg-white text-sm text-primary",
+                            "flex size-6 items-center justify-center rounded-sm bg-white text-sm text-primary",
                             {
                               "bg-primary text-white": true,
                             },
@@ -101,14 +111,16 @@ const AppSidebar = () => {
                 );
               })}
               <div className="h-2"></div>
-              <SidebarMenuItem>
-                <Link href="/create">
-                  <Button variant={"outline"} className="w-fit" size="sm">
-                    <Plus />
-                    Create Project
-                  </Button>
-                </Link>
-              </SidebarMenuItem>
+              {open && (
+                <SidebarMenuItem>
+                  <Link href="/create">
+                    <Button variant={"outline"} className="w-fit" size="sm">
+                      <Plus />
+                      Create Project
+                    </Button>
+                  </Link>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
