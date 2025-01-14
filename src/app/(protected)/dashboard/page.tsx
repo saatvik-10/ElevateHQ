@@ -30,7 +30,17 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        <div className="h-4"></div>
+        <div className="flex items-center gap-4">Team Invite Achive</div>
       </div>
+      <div className="mt-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+          Ask Ques Meeting Card
+        </div>
+      </div>
+      <div className="mt-8"></div>
+      Commits Log
     </div>
   );
 };
