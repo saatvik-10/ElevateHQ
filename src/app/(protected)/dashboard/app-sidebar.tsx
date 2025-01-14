@@ -84,7 +84,10 @@ const AppSidebar = () => {
                 return (
                   <SidebarMenuItem key={project.name}>
                     <SidebarMenuButton asChild>
-                      <div onClick={() => setProjectId(project.id)}>
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => setProjectId(project.id)}
+                      >
                         <div
                           className={cn(
                             "flex size-6 items-center justify-center rounded-sm bg-white text-sm text-primary",
