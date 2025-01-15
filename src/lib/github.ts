@@ -1,5 +1,8 @@
 import { db } from "@/server/db";
 import { Octokit } from "octokit";
+import axios from "axios";
+import { aiSummariseCommit } from "@/lib/gemini";
+import { SunMediumIcon } from "lucide-react";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -45,10 +48,45 @@ export const pollCommit = async (projectId: string) => {
     projectId,
     commitHashes,
   );
-  return unprocessedCommits;
+
+  const summaryResponses = await Promise.allSettled(
+    unprocessedCommits.map((commit) => {
+      return summariseCommits(githubUrl, commit.commitHash);
+    }),
+  );
+
+  const summaries = summaryResponses.map((response) => {
+    if (response.status === "fulfilled") {
+      return response.value;
+    }
+    return "";
+  });
+
+  const commits = await db.commit.createMany({
+    data: summaries.map((summary, index) => {
+      return {
+        projectId: projectId,
+        commitHash: unprocessedCommits[index]!.commitHash,
+        commitMessage: unprocessedCommits[index]!.commitMessage,
+        commitAuthorName: unprocessedCommits[index]!.commitAuthorName,
+        commitAuthorAvatar: unprocessedCommits[index]!.commitAuthorAvatar,
+        commitDate: unprocessedCommits[index]!.commitDate,
+        summary,
+      };
+    }),
+  });
+  return commits;
 };
 
-async function summariseCommits(githurl: string, commitHash: string) {}
+async function summariseCommits(githubUrl: string, commitHash: string) {
+  //get the diff and pass in into the ai model
+  const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+    headers: {
+      Accept: "application/vnd.github.v3.diff", //github api header
+    },
+  });
+  return (await aiSummariseCommit(data)) || "";
+}
 
 async function fetchProjectGithubUrl(projectId: string) {
   const project = await db.project.findUnique({
