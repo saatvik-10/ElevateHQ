@@ -2,7 +2,6 @@ import { db } from "@/server/db";
 import { Octokit } from "octokit";
 import axios from "axios";
 import { aiSummariseCommit } from "@/lib/gemini";
-import { SunMediumIcon } from "lucide-react";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -122,5 +121,3 @@ async function filterprocessedCommits(
   );
   return unprocessedCommits;
 }
-
-await pollCommit("cm5to2qmp00065bxyqzgbk2z3").then(console.log);
