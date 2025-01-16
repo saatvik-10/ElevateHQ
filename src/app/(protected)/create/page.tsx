@@ -18,7 +18,7 @@ const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm<FormInputProps>();
   const createProject = api.project.createProject.useMutation();
   const reftech = useRefetch();
-i
+
   function onSubmit(data: FormInputProps) {
     createProject.mutate(
       {
