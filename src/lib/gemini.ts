@@ -62,7 +62,7 @@ export async function generateEmbeddingAI(summary: string) {
   const model = genAI.getGenerativeModel({
     model: "text-embedding-004",
   });
-  const result = await model.embedContent(summary);
+  const result = await model.embedContent(summary); //generate vector representation of the summary
   const embedding = result.embedding;
   return embedding.values;
 }
