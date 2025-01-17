@@ -65,7 +65,7 @@ export const indexGithubRepo = async (
       });
       //prisma doesn't support vectordata type
       await db.$executeRaw`
-        UPDATE SourceCodeEmbedding
+        UPDATE "SourceCodeEmbedding"
         SET "summaryEmbedding" = ${embedding.embedding}::vector
         WHERE "id" = ${sourceCodeEmbedding.id}`;
     }),
