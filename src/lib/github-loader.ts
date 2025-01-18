@@ -1,7 +1,7 @@
 import { GithubRepoLoader } from "@langchain/community/document_loaders/web/github";
 import { Document } from "@langchain/core/documents";
-import { summariseCode } from "./gemini";
-import { generateEmbeddingAI } from "./gemini";
+import { summariseCode, generateEmbedding } from "./gemini";
+// import { allEmbeddings } from "./gemini";
 import { db } from "@/server/db";
 
 //github token to access private repo
@@ -33,34 +33,19 @@ export const indexGithubRepo = async (
 ) => {
   const docs = await loadGithubRepo(githubUrl, githubToken);
 
-  const generateEmbeddings = async (docs: Document[]) => {
-    return await Promise.all(
-      docs.map(async (doc) => {
-        const summary = await summariseCode(doc);
-        const embedding = await generateEmbeddingAI(summary);
-        return {
-          summary,
-          embedding,
-          sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-          fileName: doc.metadata.source,
-        };
-      }),
-    );
-  };
-
-  const getAllEmbeddings = await generateEmbeddings(docs);
+  const allEmbeddings = await generateEmbeddings(docs);
   await Promise.allSettled(
-    getAllEmbeddings.map(async (embedding, index) => {
-      console.log(`Processing ${index} of ${getAllEmbeddings.length}`);
+    allEmbeddings.map(async (embedding, index) => {
+      console.log(`Processing ${index} of ${allEmbeddings.length}`);
 
       if (!embedding) return;
 
       const sourceCodeEmbedding = await db.sourceCodeEmbedding.create({
         data: {
-          projectId,
-          sourceCode: embedding.sourceCode,
           summary: embedding.summary,
+          sourceCode: embedding.sourceCode,
           fileName: embedding.fileName,
+          projectId,
         },
       });
       //prisma doesn't support vectordata type
@@ -68,6 +53,21 @@ export const indexGithubRepo = async (
         UPDATE "SourceCodeEmbedding"
         SET "summaryEmbedding" = ${embedding.embedding}::vector
         WHERE "id" = ${sourceCodeEmbedding.id}`;
+    }),
+  );
+};
+
+const generateEmbeddings = async (docs: Document[]) => {
+  return await Promise.all(
+    docs.map(async (doc) => {
+      const summary = await summariseCode(doc);
+      const embedding = await generateEmbedding(summary);
+      return {
+        summary,
+        embedding,
+        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
+        fileName: doc.metadata.source,
+      };
     }),
   );
 };

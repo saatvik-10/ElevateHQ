@@ -45,7 +45,7 @@ export const aiSummariseCommit = async (diff: string) => {
 
 export async function summariseCode(doc: Document) {
   console.log("Getting summary for", doc.metadata.source);
-  try {
+  // try {
     const code = doc.pageContent.slice(0, 10000);
     const response = await model.generateContent([
       `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
@@ -57,12 +57,12 @@ export async function summariseCode(doc: Document) {
       Give a summary in no more than 100 words of the code above`,
     ]);
     return response.response.text();
-  } catch (err) {
-    return "";
-  }
+  // } catch (err) {
+  //   return "";
+  // }
 }
 
-export async function generateEmbeddingAI(summary: string) {
+export async function generateEmbedding(summary: string) {
   const model = genAI.getGenerativeModel({
     model: "text-embedding-004",
   });

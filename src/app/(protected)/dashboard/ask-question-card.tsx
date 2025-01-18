@@ -1,5 +1,6 @@
 "use client";
 
+import MDEditor from "@uiw/react-md-editor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,15 +25,18 @@ const AskQuestionCard = () => {
     { fileName: string; sourceCode: string; summary: string }[]
   >([]);
   const [answer, setAnswer] = React.useState("");
+
   const onSubmit = async (e: React.FormEvent) => {
+    setAnswer("");
+    setFilesReference([]);
     if (!project?.id) return;
     e.preventDefault();
     setLoading(true);
-    setOpen(true);
 
     const { output, filesReference } = await askQuestion(question, project.id);
+    setOpen(true);
     setFilesReference(filesReference);
-    setLoading(false);
+    // setLoading(false);
 
     for await (const delta of readStreamableValue(output)) {
       if (delta) {
@@ -51,11 +55,23 @@ const AskQuestionCard = () => {
               <Image src="/elevate.png" alt="Logo" width={40} height={40} />
             </DialogTitle>
           </DialogHeader>
-          {answer}
-          <h1>File References</h1>
+
+          <MDEditor.Markdown
+            source={answer}
+            className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
+          />
+          {/* <h1>File References</h1>
           {filesReference.map((file) => {
             return <span>{file.fileName}</span>;
-          })}
+          })} */}
+          <Button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            Close
+          </Button>
         </DialogContent>
       </Dialog>
       <Card className="relative col-span-3">
@@ -72,7 +88,9 @@ const AskQuestionCard = () => {
               }}
             />
             <div className="h-4"></div>
-            <Button type="submit">Ask ElevateHQ</Button>
+            <Button type="submit" disabled={loading}>
+              Ask ElevateHQ
+            </Button>
           </form>
         </CardContent>
       </Card>

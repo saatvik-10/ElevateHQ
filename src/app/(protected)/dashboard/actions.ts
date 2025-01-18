@@ -3,7 +3,7 @@
 import { streamText } from "ai";
 import { createStreamableValue } from "ai/rsc";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateEmbeddingAI } from "@/lib/gemini";
+import { generateEmbedding } from "@/lib/gemini";
 import { db } from "@/server/db";
 
 const google = createGoogleGenerativeAI({
@@ -13,7 +13,7 @@ const google = createGoogleGenerativeAI({
 export async function askQuestion(question: string, projectId: string) {
   const stream = createStreamableValue();
 
-  const queryVector = await generateEmbeddingAI(question);
+  const queryVector = await generateEmbedding(question);
   const vectorQuery = `[${queryVector.join(",")}]`;
 
   const result = (await db.$queryRaw`
@@ -32,7 +32,7 @@ export async function askQuestion(question: string, projectId: string) {
   }
 
   (async () => {
-    const { textStream } = await streamText({
+    const { textStream } = streamText({
       model: google("gemini-1.5-flash"),
       prompt: `
             You are an ai code assistant who answers question about the codebase. Your target audience is a technical intern who is looking to understand the codebase.

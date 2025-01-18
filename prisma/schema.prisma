@@ -58,7 +58,7 @@ model UserToProject {
 
     @@unique([userId, projectId])
 }
-
+ 
 model SourceCodeEmbedding {
     id        String      @id @default(cuid())
 
