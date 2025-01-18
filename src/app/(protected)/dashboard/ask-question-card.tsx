@@ -21,21 +21,21 @@ const AskQuestionCard = () => {
   const [question, setQuestion] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [filesReference, setFilesReference] = React.useState<
+  const [filesReferences, setFilesReferences] = React.useState<
     { fileName: string; sourceCode: string; summary: string }[]
   >([]);
   const [answer, setAnswer] = React.useState("");
 
   const onSubmit = async (e: React.FormEvent) => {
     setAnswer("");
-    setFilesReference([]);
+    setFilesReferences([]);
     if (!project?.id) return;
     e.preventDefault();
     setLoading(true);
 
-    const { output, filesReference } = await askQuestion(question, project.id);
+    const { output, filesReferences } = await askQuestion(question, project.id);
     setOpen(true);
-    setFilesReference(filesReference);
+    setFilesReferences(filesReferences);
     // setLoading(false);
 
     for await (const delta of readStreamableValue(output)) {
@@ -49,7 +49,7 @@ const AskQuestionCard = () => {
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="sm:!max-w-[70vw]">
           <DialogHeader>
             <DialogTitle>
               <Image src="/elevate.png" alt="Logo" width={40} height={40} />
@@ -61,7 +61,7 @@ const AskQuestionCard = () => {
             className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
           />
           {/* <h1>File References</h1>
-          {filesReference.map((file) => {
+          {filesReferences.map((file) => {
             return <span>{file.fileName}</span>;
           })} */}
           <Button
