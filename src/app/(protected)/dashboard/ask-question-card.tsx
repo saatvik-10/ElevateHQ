@@ -15,6 +15,7 @@ import Image from "next/image";
 import React from "react";
 import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
+import CodeReferences from "./code-references";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
@@ -60,10 +61,9 @@ const AskQuestionCard = () => {
             source={answer}
             className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
           />
-          {/* <h1>File References</h1>
-          {filesReferences.map((file) => {
-            return <span>{file.fileName}</span>;
-          })} */}
+          <div className="h-4"></div>
+          <CodeReferences filesReferences={filesReferences} />
+
           <Button
             type="button"
             onClick={() => {

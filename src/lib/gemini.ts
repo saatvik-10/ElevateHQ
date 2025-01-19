@@ -4,13 +4,13 @@ import { Document } from "@langchain/core/documents";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-8b",
+  model: "gemini-1.5-flash",
 });
 
 export const aiSummariseCommit = async (diff: string) => {
   //github.com/owner/repo/commit/commitHash.diff
   const response = await model.generateContent([
-    `You are a master at programming and you are trying to summarize a git diff. 
+    `You are a master at programming a nd you are trying to summarize a git diff. 
     Reminders about the git diff format: 
     For every file, there are two metadata lines like (for example): 
     \'\'\'
