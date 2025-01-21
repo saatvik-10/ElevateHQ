@@ -56,7 +56,7 @@ const AskQuestionCard = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:!max-w-[70vw]">
           <DialogHeader>
-            <div className="fap-2 flex items-center">
+            <div className="gap-2 flex items-center">
               <DialogTitle>
                 <Image src="/elevate.png" alt="Logo" width={40} height={40} />
               </DialogTitle>
