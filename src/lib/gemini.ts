@@ -43,30 +43,76 @@ export const aiSummariseCommit = async (diff: string) => {
   return response.response.text();
 };
 
-export async function summariseCode(doc: Document) {
-  console.log("Getting summary for", doc.metadata.source);
-  try {
-    const code = await doc.pageContent.slice(0, 10000);
-    const response = await model.generateContent([
-      `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
-      `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
-      Here is the code:
-      ---
-      ${code}
-      ---
-      Give a summary in no more than 100 words of the code above`,
-    ]);
-    return response.response.text();
-  } catch (err) {
-    console.log(err);
-  }
-}
+// export async function summariseCode(doc: Document) {
+//   console.log("Getting summary for", doc.metadata.source);
+//   try {
+//     const code = doc.pageContent.slice(0, 10000);
+//     const response = await model.generateContent([
+//       `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
+//       `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+//       Here is the code:
+//       ---
+//       ${code}
+//       ---
+//       Give a summary in no more than 100 words of the code above`,
+//     ]);
+//     return response.response.text();
+//   } catch (err) {
+//     console.error(`Error summarizing ${doc.metadata.source}:`, err);
+//     return null;
+//   }
+// }
 
-export async function generateEmbedding(summary: string) {
-  const model = genAI.getGenerativeModel({
-    model: "text-embedding-004",
-  });
-  const result = await model.embedContent(summary); //generate vector representation of the summary
-  const embedding = result.embedding;
-  return embedding.values;
-}
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const summariseCode = async (doc: Document) => {
+  const maxRetries = 3;
+  const backoffMs = 500; // 2 seconds base delay
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const code = doc.pageContent.slice(0, 10000);
+      const response = await model.generateContent([
+        `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
+        `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+        Here is the code:
+        ---
+        ${code}
+        ---
+        Give a summary in no more than 100 words of the code above`,
+      ]);
+      return response.response.text();
+    } catch (err: any) {
+      if (err?.status === 429) {
+        const waitTime = backoffMs * Math.pow(2, i);
+        console.log(`Rate limited, waiting ${waitTime}ms before retry...`);
+        await delay(waitTime);
+        continue;
+      }
+      console.error(`Failed for ${doc.metadata.source}:`, err);
+      return null;
+    }
+  }
+  return null;
+};
+
+// export async function generateEmbedding(summary: string) {
+//   const model = genAI.getGenerativeModel({
+//     model: "text-embedding-004",
+//   });
+//   const result = await model.embedContent(summary); //generate vector representation of the summary
+//   const embedding = result.embedding;
+//   return embedding.values;
+// }
+export const generateEmbedding = async (summary: string | null) => {
+  if (!summary) return null;
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const result = await model.embedContent(summary);
+    return result.embedding.values;
+  } catch (err) {
+    console.error("Error generating embedding:", err);
+    return null;
+  }
+};

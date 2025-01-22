@@ -1,7 +1,6 @@
 import { GithubRepoLoader } from "@langchain/community/document_loaders/web/github";
 import { Document } from "@langchain/core/documents";
 import { summariseCode, generateEmbedding } from "./gemini";
-// import { allEmbeddings } from "./gemini";
 import { db } from "@/server/db";
 
 //github token to access private repo
@@ -17,6 +16,7 @@ export const loadGithubRepo = async (
       "pnpm-lock.yaml",
       "yarn.lock",
       "package-lock.json",
+      "node_modules",
     ],
     recursive: true, //to get all files in the repo
     unknown: "warn",
@@ -24,6 +24,21 @@ export const loadGithubRepo = async (
   });
   const docs = await loader.load();
   return docs;
+};
+
+const generateEmbeddings = async (docs: Document[]) => {
+  return await Promise.all(
+    docs.map(async (doc) => {
+      const summary = await summariseCode(doc);
+      const embedding = await generateEmbedding(summary || "");
+      return {
+        summary,
+        embedding,
+        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
+        fileName: doc.metadata.source,
+      };
+    }),
+  );
 };
 
 export const indexGithubRepo = async (
@@ -53,21 +68,6 @@ export const indexGithubRepo = async (
         UPDATE "SourceCodeEmbedding"
         SET "summaryEmbedding" = ${embedding.embedding}::vector
         WHERE "id" = ${sourceCodeEmbedding.id}`;
-    }),
-  );
-};
-
-const generateEmbeddings = async (docs: Document[]) => {
-  return await Promise.all(
-    docs.map(async (doc) => {
-      const summary = await summariseCode(doc);
-      const embedding = await generateEmbedding(summary || "");
-      return {
-        summary,
-        embedding,
-        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-        fileName: doc.metadata.source,
-      };
     }),
   );
 };
