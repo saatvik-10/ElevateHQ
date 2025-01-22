@@ -18,6 +18,7 @@ import { readStreamableValue } from "ai/rsc";
 import CodeReferences from "./code-references";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import useRefetch from "@/hooks/use-refetch";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
@@ -51,12 +52,14 @@ const AskQuestionCard = () => {
     setLoading(false);
   };
 
+  const refetch = useRefetch();
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:!max-w-[70vw]">
           <DialogHeader>
-            <div className="gap-2 flex items-center">
+            <div className="flex items-center gap-2">
               <DialogTitle>
                 <Image src="/elevate.png" alt="Logo" width={40} height={40} />
               </DialogTitle>
@@ -73,6 +76,7 @@ const AskQuestionCard = () => {
                     {
                       onSuccess: () => {
                         toast.success("Answer saved successfully");
+                        refetch();
                       },
                       onError: () => {
                         toast.error("Failed to save answer");
@@ -90,7 +94,7 @@ const AskQuestionCard = () => {
             className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
           />
           <div className="h-4"></div>
-          <CodeReferences filesReferences={filesReferences}/>
+          <CodeReferences filesReferences={filesReferences} />
 
           <Button
             type="button"

@@ -67,7 +67,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const summariseCode = async (doc: Document) => {
   const maxRetries = 3;
-  const backoffMs = 500; // 2 seconds base delay
+  const backoffMs = 1000; // 2 seconds base delay
 
   for (let i = 0; i < maxRetries; i++) {
     try {
