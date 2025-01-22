@@ -26,21 +26,6 @@ export const loadGithubRepo = async (
   return docs;
 };
 
-const generateEmbeddings = async (docs: Document[]) => {
-  return await Promise.all(
-    docs.map(async (doc) => {
-      const summary = await summariseCode(doc);
-      const embedding = await generateEmbedding(summary || "");
-      return {
-        summary,
-        embedding,
-        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-        fileName: doc.metadata.source,
-      };
-    }),
-  );
-};
-
 export const indexGithubRepo = async (
   projectId: string,
   githubUrl: string,
@@ -68,6 +53,21 @@ export const indexGithubRepo = async (
         UPDATE "SourceCodeEmbedding"
         SET "summaryEmbedding" = ${embedding.embedding}::vector
         WHERE "id" = ${sourceCodeEmbedding.id}`;
+    }),
+  );
+};
+
+const generateEmbeddings = async (docs: Document[]) => {
+  return await Promise.all(
+    docs.map(async (doc) => {
+      const summary = await summariseCode(doc);
+      const embedding = await generateEmbedding(summary || "");
+      return {
+        summary,
+        embedding,
+        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
+        fileName: doc.metadata.source,
+      };
     }),
   );
 };

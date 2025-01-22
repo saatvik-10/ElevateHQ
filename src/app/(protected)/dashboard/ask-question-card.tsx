@@ -90,7 +90,7 @@ const AskQuestionCard = () => {
             className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
           />
           <div className="h-4"></div>
-          <CodeReferences filesReferences={filesReferences} />
+          <CodeReferences filesReferences={filesReferences}/>
 
           <Button
             type="button"
