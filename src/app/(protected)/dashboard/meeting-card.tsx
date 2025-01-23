@@ -10,7 +10,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
 const MeetingCard = () => {
   const [progress, setProgress] = React.useState(0);
-  const [isUploading, setIsUploading] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(true);
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "audio/*": [".mp3", ".wav", ".m4a", ".flac"],
@@ -64,6 +64,12 @@ const MeetingCard = () => {
             value={progress}
             text={`${progress}%`}
             className="size-20"
+            styles={(
+              buildStyles({
+                pathColor: "#e11d48",
+                textColor: "#e11d48",
+              })
+            )}
           />
           <p className="text-center text-sm text-gray-500">
             Uploading your meeting...
