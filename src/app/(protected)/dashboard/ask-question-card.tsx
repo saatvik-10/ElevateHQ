@@ -115,6 +115,7 @@ const AskQuestionCard = () => {
             <Textarea
               placeholder="Which file should I edit to change the Home Page?"
               value={question}
+              className="h-[10vh]"
               onChange={(e) => {
                 setQuestion(e.target.value);
               }}

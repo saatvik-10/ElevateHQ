@@ -4,7 +4,7 @@ import { Document } from "@langchain/core/documents";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-1.5-pro",
 });
 
 export const aiSummariseCommit = async (diff: string) => {
@@ -43,58 +43,58 @@ export const aiSummariseCommit = async (diff: string) => {
   return response.response.text();
 };
 
-export async function summariseCode(doc: Document) {
-  console.log("Getting summary for", doc.metadata.source);
-  try {
-    const code = doc.pageContent.slice(0, 10000);
-    const response = await model.generateContent([
-      `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
-      `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
-      Here is the code:
-      ---
-      ${code}
-      ---
-      Give a summary in no more than 100 words of the code above`,
-    ]);
-    return response.response.text();
-  } catch (err) {
-    console.error(`Error summarizing ${doc.metadata.source}:`, err);
-    return null;
-  }
-}
-
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// export const summariseCode = async (doc: Document) => {
-//   const maxRetries = 3;
-//   const backoffMs = 2000; // 2 seconds base delay
-
-//   for (let i = 0; i < maxRetries; i++) {
-//     try {
-//       const code = doc.pageContent.slice(0, 10000);
-//       const response = await model.generateContent([
-//         `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
-//         `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
-//         Here is the code:
-//         ---
-//         ${code}
-//         ---
-//         Give a summary in no more than 100 words of the code above`,
-//       ]);
-//       return response.response.text();
-//     } catch (err: any) {
-//       if (err?.status === 429) {
-//         const waitTime = backoffMs * Math.pow(2, i);
-//         console.log(`Rate limited, waiting ${waitTime}ms before retry...`);
-//         await delay(waitTime);
-//         continue;
-//       }
-//       console.error(`Failed for ${doc.metadata.source}:`, err);
-//       return null;
-//     }
+// export async function summariseCode(doc: Document) {
+//   console.log("Getting summary for", doc.metadata.source);
+//   try {
+//     const code = doc.pageContent.slice(0, 10000);
+//     const response = await model.generateContent([
+//       `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
+//       `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+//       Here is the code:
+//       ---
+//       ${code}
+//       ---
+//       Give a summary in no more than 100 words of the code above`,
+//     ]);
+//     return response.response.text();
+//   } catch (err) {
+//     console.error(`Error summarizing ${doc.metadata.source}:`, err);
+//     return null;
 //   }
-//   return null;
-// };
+// }
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const summariseCode = async (doc: Document) => {
+  const maxRetries = 3;
+  const backoffMs = 2000; // 2 seconds base delay
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const code = doc.pageContent.slice(0, 10000);
+      const response = await model.generateContent([
+        `You are an intelligent senior software engineer who specializes in onboarding junior software engineers onto projects.`,
+        `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+        Here is the code:
+        ---
+        ${code}
+        ---
+        Give a summary in no more than 100 words of the code above`,
+      ]);
+      return response.response.text();
+    } catch (err: any) {
+      if (err?.status === 429) {
+        const waitTime = backoffMs * Math.pow(2, i);
+        console.log(`Rate limited, waiting ${waitTime}ms before retry...`);
+        await delay(waitTime);
+        continue;
+      }
+      console.error(`Failed for ${doc.metadata.source}:`, err);
+      return null;
+    }
+  }
+  return null;
+};
 
 // export async function generateEmbedding(summary: string) {
 //   const model = genAI.getGenerativeModel({

@@ -6,7 +6,6 @@ import { ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import CommitLog from "./commit-log";
 import AskQuestionCard from "./ask-question-card";
-import MeetingCard from "./meeting-card";
 
 const Dashboard = () => {
   const { project } = useProject();
@@ -38,9 +37,8 @@ const Dashboard = () => {
         <div className="flex items-center gap-4">Team Invite Achive</div>
       </div>
       <div className="mt-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+        <div className="">
           <AskQuestionCard />
-          <MeetingCard />
         </div>
       </div>
       <div className="mt-8"></div>
