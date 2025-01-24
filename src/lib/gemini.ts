@@ -66,7 +66,7 @@ export const aiSummariseCommit = async (diff: string) => {
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const summariseCode = async (doc: Document) => {
-  const maxRetries = 3;
+  const maxRetries = 2;
   const backoffMs = 2000; // 2 seconds base delay
 
   for (let i = 0; i < maxRetries; i++) {

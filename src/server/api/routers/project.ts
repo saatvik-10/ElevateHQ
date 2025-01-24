@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { pollCommit } from "@/lib/github";
 import { indexGithubRepo } from "@/lib/github-loader";
-import { CarTaxiFront } from "lucide-react";
 
 export const ProjectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -92,6 +91,22 @@ export const ProjectRouter = createTRPCRouter({
         },
         orderBy: {
           createdAt: "desc",
+        },
+      });
+    }),
+  archiveProject: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.project.update({
+        where: {
+          id: input.projectId,
+        },
+        data: {
+          deletedAt: new Date(),
         },
       });
     }),
