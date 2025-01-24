@@ -20,7 +20,6 @@ import {
   CreditCard,
   LayoutDashboard,
   Plus,
-  Presentation,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,7 +28,6 @@ import { usePathname } from "next/navigation";
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "QnA", url: "/qna", icon: Bot },
-  { title: "Meetings", url: "/meetings", icon: Presentation },
   { title: "Billing", url: "/billing", icon: CreditCard },
 ];
 
