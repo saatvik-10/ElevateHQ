@@ -8,6 +8,7 @@ import CommitLog from "./commit-log";
 import AskQuestionCard from "./ask-question-card";
 import ArchiveBtn from "./archive-btn";
 import InviteBtn from "./invite-btn";
+import TeamMembers from "./team-members";
 
 const Dashboard = () => {
   const { project } = useProject();
@@ -37,7 +38,7 @@ const Dashboard = () => {
 
         <div className="h-4"></div>
         <div className="flex items-center gap-4">
-          Team 
+          <TeamMembers />
           <InviteBtn />
           <ArchiveBtn />
         </div>
