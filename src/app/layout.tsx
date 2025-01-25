@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "ElevateHQ",
   description: "Github SAAS",
-  icons: [{ rel: "icon", url: "/logo.png" }],
+  icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
 export default function RootLayout({

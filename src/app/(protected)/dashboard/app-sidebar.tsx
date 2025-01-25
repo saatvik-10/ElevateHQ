@@ -41,7 +41,7 @@ const AppSidebar = () => {
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <Image alt="Logo" src="/logo.png" height={40} width={40} />
+          <Image alt="Logo" src="/elevate.png" height={40} width={40} />
           {open && (
             <h1 className="text-xl font-bold text-primary/80">ElevateHQ</h1>
           )}
