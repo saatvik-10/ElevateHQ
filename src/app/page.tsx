@@ -1,26 +1,24 @@
-// "use client";
+"use client";
 
-// import React, { useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-// export default function Home() {
-//   const router = useRouter();
+export default function page() {
+  const router = useRouter();
 
-//   useEffect(() => {
-//     router.push("/sync-user");
-//   }, [router]);
-
-//   return null;
-// }
-
-import React from 'react'
-
-const page = () => {
-  return (
-    <div>
-      ...
-    </div>
-  )
+  useEffect(() => {
+    router.push("/sync-user");
+  }, [router]);
 }
 
-export default page
+// import React from 'react'
+
+// const page = () => {
+//   return (
+//     <div>
+//       ...
+//     </div>
+//   )
+// }
+
+//export default page
