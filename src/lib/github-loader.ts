@@ -1,6 +1,6 @@
 import { GithubRepoLoader } from "@langchain/community/document_loaders/web/github";
 import { Document } from "@langchain/core/documents";
-import { summariseCode, generateEmbedding } from "./gemini";
+import { summariseCode, generateEmbedding } from "./openrouter";
 import { db } from "@/server/db";
 
 //github token to access private repo

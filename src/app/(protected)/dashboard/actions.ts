@@ -1,14 +1,8 @@
 "use server";
 
-import { streamText } from "ai";
 import { createStreamableValue } from "ai/rsc";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateEmbedding } from "@/lib/gemini";
+import { generateEmbedding, streamChatCompletion } from "@/lib/openrouter";
 import { db } from "@/server/db";
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
 
 export async function askQuestion(question: string, projectId: string) {
   const stream = createStreamableValue();
@@ -32,9 +26,7 @@ export async function askQuestion(question: string, projectId: string) {
   }
 
   (async () => {
-    const { textStream } = streamText({
-      model: google("gemini-1.5-flash"),
-      prompt: `
+    const prompt = `
             You are an ai code assistant who answers question about the codebase. Your target audience is a technical intern who is looking to understand the codebase.
             AI assistant is a brand new, powerful, human-like artificial intelligence. The traits of AI include expert knowledge, helofulness, cleverness and articulateness.
             AI is a well-behaved and well-mannered individual.
@@ -52,11 +44,10 @@ export async function askQuestion(question: string, projectId: string) {
             If the context does not provide the answer to the question, the AI assistant will say, "I'm sorry, but I dont't know the answer to this question."
             AI assistant will not apologize for the previous responses. but instead will indicate the new information that was gained.
             AI assistant will not invent anything that is is not drawn directly from the context.
-            Answer is markdown syntax, with code snippets if needed. Be as detailed as possible while answering, but do not provide any information that is not in the context.`,
-    });
-    for await (const delta of textStream) {
+            Answer is markdown syntax, with code snippets if needed. Be as detailed as possible while answering, but do not provide any information that is not in the context.`;
+    await streamChatCompletion(prompt, (delta) => {
       stream.update(delta);
-    }
+    });
 
     stream.done();
   })();
